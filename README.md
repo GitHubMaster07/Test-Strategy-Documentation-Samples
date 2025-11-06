@@ -1,1 +1,212 @@
-# Test-Strategy-Documentation-Samples
+# 🚀 Test Strategy Documentation Samples
+
+![Java](https://img.shields.io/badge/Language-Java_11-blue?logo=java)
+![Selenium](https://img.shields.io/badge/UI%20Testing-Selenium-green?logo=selenium)
+![RestAssured](https://img.shields.io/badge/API%20Testing-RestAssured-yellowgreen)
+![Cucumber](https://img.shields.io/badge/BDD-Cucumber-brightgreen?logo=cucumber)
+![Maven](https://img.shields.io/badge/Build-Maven-orange?logo=apachemaven)
+![Allure](https://img.shields.io/badge/Reports-Allure-blueviolet)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
+---
+
+## 🧠 Project Overview
+This is a **hybrid automation framework** built using:
+- **Java + Selenium WebDriver** for UI testing  
+- **RestAssured** for API automation  
+- **Cucumber (BDD)** for feature-driven testing  
+- **JDBC + SQL** for backend validation  
+- **TestNG + Maven + Allure** for execution and reporting
+
+The framework enables **end-to-end testing (UI + API + DB)** and integrates seamlessly with **CI/CD pipelines (GitHub Actions/Jenkins)**.
+
+---
+
+# 📘 TEST DOCUMENTATION
+
+---
+
+## 🧾 1. TEST PLAN
+
+### 🎯 Objective
+To ensure functional, regression, and integration-level validation of web and API components for a sample application (The Internet - Heroku).
+
+### 🧩 Scope
+| In-Scope | Out-of-Scope |
+|-----------|---------------|
+| Web UI tests for login and secure pages | Non-UI services (SOAP, Kafka) |
+| REST API tests for CRUD operations | Performance or load testing |
+| Database validation | Mobile testing |
+
+### 🧪 Test Levels
+- **Smoke Tests** – Quick validation of core flows  
+- **Regression Tests** – Full suite covering all functional modules  
+- **API Tests** – Endpoint validation with RestAssured  
+- **Database Tests** – Data validation via JDBC  
+
+### 🕐 Schedule
+| Phase | Description | Owner |
+|--------|-------------|--------|
+| Test Planning | Define scope, tools, environment | QA Lead |
+| Test Design | Create BDD feature files & data | SDET |
+| Test Execution | Run tests in local/CI | SDET |
+| Reporting | Generate and analyze Allure reports | SDET |
+
+---
+
+## 🧩 2. TEST STRATEGY
+
+### 🧱 Framework Architecture
+src/
+    ├── main/java/core → DriverFactory, Config, Utilities
+
+  ├── test/java/pages → Page Object Model (POM)
+
+  ├── test/java/api → API Test Classes (RestAssured)
+
+  ├── test/java/data → Database Utilities
+
+  ├── test/java/stepdefs → Step Definitions (BDD)
+
+  ├── test/java/runners → Cucumber/TestNG Runners
+
+  └── test/resources/features → Feature Files
+
+### 🔧 Tools & Tech Stack
+| Layer | Tool | Purpose |
+|--------|------|----------|
+| UI | Selenium | Functional web testing |
+| API | RestAssured | REST endpoint testing |
+| BDD | Cucumber | Human-readable scenarios |
+| Build | Maven | Dependency & test management |
+| Reports | Allure / HTML | Visual execution results |
+| CI/CD | Jenkins / GitHub Actions | Continuous execution |
+| DB | JDBC | SQL-based validation |
+
+### 🧠 Strategy Summary
+- Use **Page Object Model (POM)** for UI  
+- Use **Cucumber BDD** for readability & traceability  
+- Maintain environment configs in `config.properties`  
+- Parallel test execution supported with **ThreadLocal DriverFactory**  
+- Store reusable methods in `utilities/`  
+- Capture screenshots automatically on failures  
+- Allure report auto-generated after each run  
+
+---
+
+## 📄 3. TEST CASE EXAMPLES
+
+### ✅ Example 1: UI Test (Login Page)
+**Feature:** User Login  
+**Scenario:** Successful login with valid credentials  
+
+| Step | Action | Expected Result |
+|------|---------|-----------------|
+| 1 | Navigate to Login page | Login page loads |
+| 2 | Enter valid credentials | Fields accept input |
+| 3 | Click Login button | Redirects to secure area |
+| 4 | Verify message | Displays “You logged into a secure area!” |
+
+---
+
+### 🧪 Example 2: API Test (Booking Creation)
+```java
+@Test
+public void createBooking() {
+    given()
+        .baseUri(BASE_URL)
+        .contentType(ContentType.JSON)
+        .body(BookingPayload.createBookingBody())
+    .when()
+        .post("/booking")
+    .then()
+        .statusCode(200)
+        .body("booking.firstname", equalTo("Jim"))
+        .body("booking.lastname", equalTo("Brown"));
+}
+
+
+
+🧩 Example 3: Database Validation
+Connection conn = DriverManager.getConnection(dbUrl, username, password);
+PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE id = ?");
+stmt.setInt(1, 1001);
+ResultSet rs = stmt.executeQuery();
+Assert.assertTrue(rs.next(), "Record not found in DB");
+
+🐞 4. BUG REPORT EXAMPLES
+| ID      | Summary                            | Steps to Reproduce                    | Expected Result         | Actual Result             | Severity | Status      |
+| ------- | ---------------------------------- | ------------------------------------- | ----------------------- | ------------------------- | -------- | ----------- |
+| BUG-001 | Login fails with valid credentials | Enter correct user/pass → click login | Redirect to secure area | Stuck on login page       | High     | Open        |
+| BUG-002 | API returns 500 on invalid token   | Call POST /booking with expired token | 401 Unauthorized        | 500 Internal Server Error | Medium   | In Progress |
+| BUG-003 | DB data not synced                 | Create booking via UI                 | DB should have entry    | Record missing            | High     | Open        |
+
+🧰 5. TEST SUITE STRUCTURE
+| Suite           | Scope                                  | Type          |
+| --------------- | -------------------------------------- | ------------- |
+| SmokeSuite      | Sanity check for critical endpoints/UI | UI + API      |
+| RegressionSuite | Full feature coverage                  | UI + API + DB |
+| ApiSuite        | Independent API test runs              | API           |
+| DbSuite         | Data-level validation                  | DB            |
+
+📊 6. TEST REPORTING
+📘 Allure Report Example
+Run after tests: allure serve target/allure-results
+
+Generates an interactive dashboard with:
+- Test summary
+- Failure screenshots
+- API request/response logs
+- Execution trends over time
+
+📘 Cucumber HTML Report
+Automatically generated in: target/cucumber-reports/
+
+🧱 7. CI/CD PIPELINE EXAMPLE (GitHub Actions)
+name: Java Maven Test Execution
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Build with Maven
+        run: mvn clean test
+      - name: Generate Allure Report
+        run: |
+          npm install -g allure-commandline
+          allure generate target/allure-results --clean -o target/allure-report
+
+🧩 8. TEST DATA MANAGEMENT
+- Store test data under /src/test/resources/testdata/
+- Use Faker library to generate random input dynamically
+- Maintain environment.properties for URLs and credentials
+
+🧩 9. RISKS & MITIGATION
+| Risk                    | Mitigation                         |
+| ----------------------- | ---------------------------------- |
+| Flaky tests             | Add waits, retry logic             |
+| Locator changes         | Centralize in POM                  |
+| Environment downtime    | Use mock servers or virtualization |
+| Test data inconsistency | Add teardown scripts               |
+
+🧠 10. BEST PRACTICES
+✅ Maintain atomic, independent test cases
+✅ Keep feature files human-readable
+✅ Use assertions smartly — 1 major validation per test
+✅ Avoid hard-coded values (use properties/config)
+✅ Log everything (SLF4J / Log4j)
+✅ Keep reports versioned in CI/CD artifacts
+
+👨‍💻 Author
+Sergei Volodin
+🏙️ Chicago, IL
+💼 Senior SDET / QA Automation Engineer
+🔗 [GitHub](https://github.com/GitHubMaster07/-Sergei-Volodin-_portfolio)
+🧪 Passionate about test automation, CI/CD, and quality engineering excellence.
