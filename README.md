@@ -81,8 +81,8 @@ This matrix ensures 100% test coverage by mapping business requirements to autom
 
 | Requirement | Feature File | Test Case ID | Defect Link |
 | :--- | :--- | :--- | :--- |
-| User Authentication | login.feature | TC-UI-01 | [BUG-001](`JIRA-001`) |
-| Booking API | create_booking.feature | TC-API-05 | [BUG-002](`JIRA-005`) |
+| User Authentication | login.feature | TC-UI-01 | [BUG-001](#-4-bug-report-examples) |
+| Booking API | create_booking.feature | TC-API-05 | [BUG-002](#-4-bug-report-examples) |
 
 ### 🔧 Tools & Tech Stack
 | Layer | Tool | Purpose |
