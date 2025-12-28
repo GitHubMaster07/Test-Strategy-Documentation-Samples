@@ -79,8 +79,6 @@ java-selenium-bdd-framework/
 ### 🔍 Requirements Traceability Matrix (RTM)
 This matrix ensures 100% test coverage by mapping business requirements to automated features and defect tracking.
 
-### 🔍 Requirements Traceability Matrix (RTM)
-
 | Requirement | Feature File | Test Case ID | Defect Link |
 | :--- | :--- | :--- | :--- |
 | User Authentication | login.feature | TC-UI-01 | [BUG-001](#-4-bug-report-examples) |
@@ -228,38 +226,66 @@ Java Implementation (JDBC + TestNG) This shows how wrap database connections int
 | DbSuite         | Data-level validation                  | DB            |
 ---
 ### 📊 6. TEST REPORTING
-📘 Allure Report Example
-Run after tests: allure serve target/allure-results
+Your framework provides dual-layer visibility: technical depth for developers and high-level summaries for business stakeholders.
 
-Generates an interactive dashboard with:
-- Test summary
-- Failure screenshots
-- API request/response logs
-- Execution trends over time
+📘 **Allure Report (Rich Dashboard)**
 
-📘 Cucumber HTML Report
-Automatically generated in: target/cucumber-reports/
+Location: target/allure-results/
+
+Command: allure serve target/allure-results
+
+Features: Includes failure screenshots, categorized defects (Product vs. Test defects), and execution history trends.
+
+📗 **Cucumber HTML Report (Lightweight)**
+
+Location: target/cucumber-reports/index.html
+
+Usage: A single-file, portable HTML report that can be opened in any browser without a server. It provides a clean, step-by-step breakdown of Gherkin scenario results.
+
 ---
 ### 🧱 7. CI/CD PIPELINE EXAMPLE (GitHub Actions)
-name: Java Maven Test Execution
-on: [push, pull_request]
+This configuration automates the testing lifecycle: triggering on every code push, executing the suite in a headless Linux environment, and generating a visual quality report.
 
-```jobs:
+```YAML
+name: Java Maven Test Execution
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11
         uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'temurin'
-      - name: Build with Maven
-        run: mvn clean test
+          cache: 'maven' # Optimizes build speed by caching dependencies
+
+      - name: Execute Tests
+        run: mvn clean test -DsuiteXmlFile=testng.xml
+
       - name: Generate Allure Report
+        if: always() # Ensures reports are generated even if tests fail
         run: |
           npm install -g allure-commandline
           allure generate target/allure-results --clean -o target/allure-report
+
+      - name: Upload Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report
+          retention-days: 7
 ```
 ---
 ### 🧩 8. TEST DATA MANAGEMENT
