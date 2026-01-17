@@ -169,7 +169,7 @@ The framework follows a modular, scalable architecture:
 - Thread‑safe drivers, clients, and DB connections  
 
 Full details are available in:  
-📄 `docs/Framework-Architecture.md`
+📄 [docs/Framework-Architecture.md](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/blob/main/docs/Framework-Architecture.md)
 
 ---
 
@@ -184,7 +184,7 @@ The automation framework integrates with CI/CD pipelines to support:
 - Automatic reruns and flakiness detection  
 
 Full CI/CD documentation:  
-📄 `docs/CI-CD.md`
+📄 [docs/CI-CD.md](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/blob/main/docs/CI-CD.md)
 
 ---
 
