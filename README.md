@@ -1,4 +1,4 @@
- <p align="center">
+<p align="center">
   <img src="https://img.shields.io/badge/License-MIT-success" />
   <img src="https://img.shields.io/badge/Java-17-blue" />
   <img src="https://img.shields.io/badge/Selenium-WebDriver-green" />
@@ -14,13 +14,17 @@
   <img src="https://img.shields.io/badge/CI%2FCD-GitHub_Actions%2FJenkins-blue" />
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/stars/GitHubMaster07/Test-Strategy-Blueprint?style=flat&color=yellow" />
+  <img src="https://img.shields.io/github/forks/GitHubMaster07/Test-Strategy-Blueprint?style=flat&color=lightgrey" />
+  <img src="https://img.shields.io/github/issues/GitHubMaster07/Test-Strategy-Blueprint?style=flat&color=orange" />
+</p>
+
 <h1 align="center">🚀 Enterprise Test Strategy Blueprint</h1>
 
 <p align="center">
   A complete, enterprise‑grade Quality Engineering blueprint for UI, API, DB, events, integrations, and CI/CD.
 </p>
-
-Java • Selenium • RestAssured • Cucumber • TestNG • Maven • Allure • JDBC • WireMock • Pact • Kafka
 
 ## 📘 Executive Summary
 This repository provides a complete, enterprise‑grade Test Strategy Blueprint designed for modern distributed systems.  
