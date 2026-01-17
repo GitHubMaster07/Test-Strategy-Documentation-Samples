@@ -180,12 +180,12 @@ mvn clean test -Dsuite=regression
 ## 📚 Documentation Index
 All detailed documentation is located in the `docs/` directory:
 
-- **Test Strategy** → `docs/Test-Strategy.md`  
-- **Framework Architecture** → `docs/Framework-Architecture.md`  
-- **Test Layers** → `docs/Test-Layers.md`  
-- **Advanced Testing (NFR)** → `docs/Advanced-Testing.md`  
-- **CI/CD** → `docs/CI-CD.md`  
-- **Examples** → `docs/Examples/`  
+- **Test Strategy** → [docs/Test-Strategy.md](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/blob/main/docs/Test-Strategy.md)  
+- **Framework Architecture** → [docs/Framework-Architecture.md](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/blob/main/docs/Framework-Architecture.md)  
+- **Test Layers** → [docs/Test-Layers.md](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/blob/main/docs/Test-Layers.md)  
+- **Advanced Testing (NFR)** → [docs/Advanced-Testing.md](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/blob/main/docs/Advanced-Testing.md)  
+- **CI/CD** → [docs/CI-CD.md](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/blob/main/docs/CI-CD.md)  
+- **Examples** → [docs/Examples/](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/tree/main/docs/Examples)  
 
 ---
 
