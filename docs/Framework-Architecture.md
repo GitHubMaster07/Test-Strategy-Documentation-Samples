@@ -334,6 +334,32 @@ java-selenium-bdd-framework/
 ---
 
 ## 17. Final Consolidated Folder Structure
-
-(Full tree repeated here for clarity — same as section 3)
+```
+java-selenium-bdd-framework/
+├── src/
+│   ├── main/java/
+│   │   └── core/
+│   │       ├── driver/              # DriverFactory, WebDriverManager, ThreadLocal driver
+│   │       ├── config/              # ConfigReader, Environment loader
+│   │       ├── utils/               # Common utilities (waits, logging, random data)
+│   │       └── api/                 # API client base classes
+│   ├── test/java/
+│   │   ├── pages/                   # Page Object Model (POM) classes
+│   │   ├── api/                     # RestAssured clients, endpoints, payload builders
+│   │   ├── db/                      # JDBC connectors, queries, DB validators
+│   │   ├── events/                  # Kafka/SQS consumers, event validators
+│   │   ├── contracts/               # Pact consumer tests
+│   │   ├── stepdefs/                # Cucumber Step Definitions
+│   │   ├── hooks/                   # Before/After hooks (screenshots, cleanup)
+│   │   └── runners/                 # TestNG runners (parallel, smoke, regression)
+│   └── test/resources/
+│       ├── features/                # Gherkin feature files
+│       ├── schemas/                 # JSON schemas for API validation
+│       ├── pact/                    # Pact contracts
+│       ├── testdata/                # Environment-specific test data
+│       └── config.properties         # Global configuration
+├── pom.xml                           # Maven dependencies & plugins
+├── .gitignore                       # Excludes target/, logs/, allure-results/
+└── .gitattributes                   # Ensures Java language detection
+```
 
