@@ -386,7 +386,77 @@ We prioritize API and Integration tests over UI tests to ensure a fast, stable, 
 - **Unit (60%)**: Individual method validation (Instant).
 ---
 
-## 📄 3. TEST CASE EXAMPLES
+## 🧩 3. API TESTING STRATEGY
+
+API testing is the backbone of the automation framework, providing fast, stable, and deeply validated coverage of backend business logic. The strategy focuses on correctness, reliability, schema validation, and integration behavior across microservices.
+
+### 🔧 Tools & Frameworks
+- **RestAssured** for HTTP request/response validation
+- **JSON Schema Validators** for payload structure enforcement
+- **Pact** for consumer-driven contract testing
+- **WireMock** for service virtualization
+- **JDBC** for backend state verification
+
+### 🧪 Types of API Tests
+1. **Smoke API Tests**
+   - Validate core endpoints (health, auth, CRUD basics)
+   - Run on every PR
+
+2. **Functional API Tests**
+   - Validate business logic, workflows, and edge cases
+   - Validate request/response correctness
+
+3. **Contract Tests (Pact)**
+   - Ensure backward compatibility between microservices
+   - Detect breaking changes early in CI
+
+4. **Integration Tests**
+   - Validate API + DB + event flow consistency
+   - Validate downstream service calls
+
+5. **Negative Tests**
+   - Invalid payloads
+   - Missing fields
+   - Unauthorized access
+   - Expired tokens
+
+### 🧬 Schema Validation
+Every API response is validated against:
+- OpenAPI/Swagger definitions
+- JSON schema files stored under `/resources/schemas/`
+- Versioned contract definitions in Pact Broker
+
+This prevents silent API drift.
+
+### 🔄 End-to-End API Workflow Validation
+API tests validate:
+- Request correctness
+- Response correctness
+- DB state changes
+- Event publication (Kafka/SQS)
+- Downstream service calls (via WireMock)
+
+### 🛡️ Security & Authorization Testing
+- Token generation & refresh flow
+- Role-based access control (RBAC)
+- Input sanitization checks (SQLi, XSS patterns)
+- Rate-limit and throttling behavior
+
+### 📊 API Performance Baselines
+Lightweight performance checks:
+- Response time thresholds
+- Payload size validation
+- Retry behavior under load
+
+### 🎯 Benefits
+- Fast feedback loop
+- High stability compared to UI tests
+- Deep validation of backend logic
+- Early detection of breaking changes
+- Strong alignment with microservice architecture
+
+
+## 📄 4. TEST CASE EXAMPLES
 
 ### ✅ Example 1: UI Test (Login Page)
 ```gherkin
@@ -468,14 +538,14 @@ public void verifyUserPersistence() throws SQLException {
 Java Implementation (JDBC + TestNG) This shows how wrap database connections into reusable utility methods for clean test scripts.
 
 ---
-### 🐞 4. BUG REPORT EXAMPLES
+### 🐞 5. BUG REPORT EXAMPLES
 | ID      | Summary                            | Steps to Reproduce                    | Expected Result         | Actual Result             | Severity | Status      |
 | ------- | ---------------------------------- | ------------------------------------- | ----------------------- | ------------------------- | -------- | ----------- |
 | BUG-001 | Login fails with valid credentials | Enter correct user/pass → click login | Redirect to secure area | Stuck on login page       | High     | Open        |
 | BUG-002 | API returns 500 on invalid token   | Call POST /booking with expired token | 401 Unauthorized        | 500 Internal Server Error | Medium   | In Progress |
 | BUG-003 | DB data not synced                 | Create booking via UI                 | DB should have entry    | Record missing            | High     | Open        |
 ---
-### 🧰 5. TEST SUITE STRUCTURE
+### 🧰 6. TEST SUITE STRUCTURE
 | Suite           | Scope                                  | Type          |
 | --------------- | -------------------------------------- | ------------- |
 | SmokeSuite      | Sanity check for critical endpoints/UI | UI + API      |
@@ -483,7 +553,7 @@ Java Implementation (JDBC + TestNG) This shows how wrap database connections int
 | ApiSuite        | Independent API test runs              | API           |
 | DbSuite         | Data-level validation                  | DB            |
 ---
-### 📊 6. TEST REPORTING
+### 📊 7. TEST REPORTING
 Your framework provides dual-layer visibility: technical depth for developers and high-level summaries for business stakeholders.
 
 📘 **Allure Report (Rich Dashboard)**
@@ -624,7 +694,7 @@ This ensures compliance with security and privacy standards.
 
 
 ---
-### 🧱 7. CI/CD PIPELINE EXAMPLE (GitHub Actions)
+### 🧱 8. CI/CD PIPELINE EXAMPLE (GitHub Actions)
 This configuration automates the testing lifecycle: triggering on every code push, executing the suite in a headless Linux environment, and generating a visual quality report.
 
 ```YAML
@@ -778,7 +848,7 @@ To reduce execution time:
 
 
 ---
-### 🧩 8. TEST DATA MANAGEMENT
+### 🧩 9. TEST DATA MANAGEMENT
 - Store test data under /src/test/resources/testdata/
 - Use Faker library to generate random input dynamically
 - Maintain environment.properties for URLs and credentials
@@ -808,7 +878,7 @@ To ensure consistency and reproducibility across environments, all test data fol
 - Enables full traceability of data changes across releases.
 
 ---
-### 🧩 9. RISKS & MITIGATION
+### 🧩 10. RISKS & MITIGATION
 | Risk                    | Mitigation                         |
 | ----------------------- | ---------------------------------- |
 | Flaky tests             | Add waits, retry logic             |
@@ -927,7 +997,7 @@ This helps leadership understand where automation provides the most value.
 
 ---
 
-### 🧩 10. ENVIRONMENT STRATEGY
+### 🧩 11. ENVIRONMENT STRATEGY
 | Environment | Purpose | Trigger |
 | :--- | :--- | :--- |
 | **Local** | Script development & debugging | Manual execution |
@@ -982,7 +1052,7 @@ To reduce drift:
 - Improves release confidence and deployment stability.
 
 
-### 🧠 11. BEST PRACTICES
+### 🧠 12. BEST PRACTICES
 ✅ Maintain atomic, independent test cases
 
 ✅ Keep feature files human-readable
