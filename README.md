@@ -185,7 +185,7 @@ It is intended for:
 
 ## 📄 License
 This project is licensed under the MIT License.  
-See the `LICENSE` file for details.
-Copyright (c) 2026 Sergei Volodin
+See the [LICENSE](https://github.com/GitHubMaster07/Enterprise-Test-Strategy-Blueprint/commit/bbf0b1e00457a37028e12311bc6006acb542c156) file for details.
+
 
 
