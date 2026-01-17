@@ -1,4 +1,4 @@
-# Test Strategy & Quality Governance
+# Test Strategy & Quality Governance 
 
 ## 1. Quality Objectives & KPIs
 
