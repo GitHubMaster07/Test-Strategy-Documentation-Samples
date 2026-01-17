@@ -455,8 +455,312 @@ Lightweight performance checks:
 - Early detection of breaking changes
 - Strong alignment with microservice architecture
 
+## 🧩 4. UI TESTING STRATEGY
 
-## 📄 4. TEST CASE EXAMPLES
+UI testing validates critical user journeys and ensures the front-end behaves correctly across browsers, devices, and environments. The strategy focuses on stability, maintainability, and minimizing flakiness.
+
+### 🧱 Design Principles
+- Page Object Model (POM) for clean separation of UI logic
+- Single Responsibility Principle for each page class
+- Reusable UI actions (click, type, wait, scroll)
+- No assertions inside Page Objects (assertions only in step definitions)
+
+### 🧪 Types of UI Tests
+1. **Smoke UI Tests**
+   - Validate login, navigation, and core flows
+   - Run on every PR
+
+2. **Functional UI Tests**
+   - Validate end-to-end user interactions
+   - Form validation, navigation, error messages
+
+3. **Cross-Browser Tests**
+   - Chrome, Firefox, Edge (configurable)
+   - Executed in parallel via Selenium Grid/Selenoid
+
+4. **Visual/UI Layout Checks (Optional)**
+   - Validate element visibility, alignment, and responsiveness
+
+### ⏱️ Stability & Flakiness Reduction
+- Explicit waits (WebDriverWait)
+- Smart retry logic for transient failures
+- ThreadLocal WebDriver for parallel execution
+- Automatic screenshot capture on failure
+
+### 🌐 Browser & Environment Coverage
+- Headless mode for CI
+- Full browser mode for local debugging
+- Environment-specific URLs loaded from config.properties
+
+### 🔄 UI + API Hybrid Testing
+To reduce UI test count:
+- API calls are used to set up test data
+- UI tests validate only the front-end behavior
+- Backend logic is validated via API tests
+
+### 🎯 Benefits
+- Minimal flakiness
+- Fast execution through parallelism
+- Clean, maintainable POM structure
+- Reduced UI test count without losing coverage
+
+## 🧩 5. DATABASE TESTING STRATEGY
+
+Database testing ensures backend correctness, data integrity, and transactional reliability across the system.  
+The strategy validates that API/UI actions produce the expected changes in the database and that data remains consistent across microservices.
+
+### 🗄️ DB Validation Principles
+- Validate backend state after API/UI operations
+- Ensure referential integrity (FK relationships)
+- Validate status transitions (e.g., pending → active → archived)
+- Confirm audit trail entries are created correctly
+- Ensure no orphaned or inconsistent records
+
+### 🔧 Tools & Frameworks
+- **JDBC** for direct SQL execution
+- **Query Builders** for reusable DB operations
+- **ResultSet Validators** for structured assertions
+- **Schema Validators** for drift detection
+
+### 🧪 Types of DB Tests
+1. **Post‑API Validation**
+   - Validate DB state after API calls
+   - Confirm record creation, updates, and deletions
+
+2. **Post‑UI Validation**
+   - Validate DB state after UI workflows
+   - Ensure UI actions trigger correct backend changes
+
+3. **Transactional Tests**
+   - Validate commit/rollback behavior
+   - Ensure multi‑step workflows update multiple tables correctly
+
+4. **Data Integrity Tests**
+   - Validate foreign keys, constraints, and relationships
+   - Ensure no duplicate or inconsistent records
+
+5. **Schema Validation**
+   - Compare actual schema vs expected schema
+   - Detect missing columns, renamed fields, or type mismatches
+
+### 🔄 Transaction-Level Testing
+To ensure correct transactional behavior:
+- Validate atomicity of multi‑table updates
+- Re‑trigger the same API call to test idempotency
+- Simulate concurrency using parallel test threads
+- Validate rollback behavior on failure
+
+### 🧬 Microservice Data Consistency
+For distributed systems:
+- API responses are cross‑checked with DB state
+- Event-driven updates (Kafka/SQS) are validated against DB changes
+- Saga/Orchestration flows are verified end‑to‑end
+- Replication lag is measured and logged
+
+### 🧹 Test Data Isolation
+To ensure deterministic results:
+- Each test uses unique identifiers (UUIDs)
+- Data cleanup scripts run after execution
+- Parallel tests use isolated datasets
+- Nightly runs can restore DB snapshots
+
+### 📊 DB Observability
+The framework logs:
+- Executed SQL queries
+- Query execution time
+- Row counts and affected records
+- Correlation IDs for tracing across services
+
+### 🎯 Benefits
+- Ensures backend correctness beyond API/UI validation  
+- Detects schema-breaking changes early  
+- Validates real-world transactional behavior  
+- Strengthens data integrity across microservices  
+- Reduces production defects caused by inconsistent data  
+
+## 🧩 6. INTEGRATION TESTING STRATEGY
+
+Integration testing validates how multiple components (API, UI, DB, events, and external services) work together as a cohesive system.  
+The goal is to ensure that cross‑service workflows behave correctly under real-world conditions.
+
+### 🔗 Scope of Integration Testing
+Integration tests cover interactions between:
+- UI → API → DB
+- API → DB → Event Bus (Kafka/SQS)
+- API → External Services (via WireMock)
+- Microservice → Microservice (via Pact contracts)
+- API → Authentication/Authorization layers
+
+These tests validate business workflows end-to-end without requiring full UI coverage.
+
+### 🧪 Types of Integration Tests
+
+#### 1. **API + DB Integration**
+- Validate that API calls correctly update backend state
+- Confirm DB constraints, triggers, and audit logs
+- Validate multi-table updates and transactional behavior
+
+#### 2. **UI + API Integration**
+- UI triggers API calls
+- API responses drive UI state changes
+- API failures surface correct UI error messages
+
+#### 3. **Event-Driven Integration**
+- API publishes events to Kafka/SQS
+- Downstream services consume events
+- DB state is updated accordingly
+- Event traces are validated using correlation IDs
+
+#### 4. **Service Virtualization Integration**
+Used when dependent services are:
+- Unstable
+- Under development
+- Rate-limited
+- Not available in lower environments
+
+WireMock simulates:
+- Success responses
+- Error responses
+- Timeouts
+- Edge cases
+
+#### 5. **Contract Integration (Pact)**
+- Ensures consumer and provider remain compatible
+- Detects breaking schema changes early
+- Validates versioned contracts in CI
+
+### 🧬 Integration Workflow Validation
+Integration tests validate:
+- End-to-end business flows
+- Data propagation across services
+- API → DB → Event → Downstream API chains
+- Authentication and authorization flows
+- Error handling and retry logic
+
+### 🧱 Environment Requirements
+Integration tests run in:
+- QA/Staging environments
+- Ephemeral test environments (Docker/Kubernetes)
+- Local environments using mocks and stubs
+
+Environment parity checks ensure:
+- API versions match expected schema
+- DB schema is aligned with release version
+- Feature flags are consistent across environments
+
+### 🧹 Test Data Management for Integration Tests
+- Test data is created via API calls (not UI)
+- DB cleanup scripts run after execution
+- Unique identifiers prevent collisions in parallel runs
+- Event-driven workflows use synthetic events for isolation
+
+### 📊 Reporting & Observability
+Integration tests produce:
+- Allure reports with step-by-step traces
+- API logs with correlation IDs
+- DB query logs
+- Event traces (Kafka/SQS)
+- WireMock request/response logs
+
+These artifacts help debug complex multi-service flows.
+
+### 🎯 Benefits
+- Validates real-world business workflows  
+- Ensures microservices communicate correctly  
+- Detects integration issues early in CI/CD  
+- Reduces production defects caused by cross-service failures  
+- Strengthens system reliability and resilience
+
+
+## 🧩 7. END‑TO‑END (E2E) TESTING STRATEGY
+
+End‑to‑End testing validates complete business workflows from the user interface down through APIs, databases, event systems, and external integrations.  
+The goal is to ensure that the system behaves correctly from the perspective of a real user.
+
+### 🎯 Purpose of E2E Tests
+E2E tests answer one question:
+
+**“Can a real user complete this workflow successfully in a production‑like environment?”**
+
+They validate:
+- UI → API → DB → Event Bus → Downstream Services
+- Authentication and authorization flows
+- Multi‑step business processes
+- Cross‑service data consistency
+- Realistic user journeys
+
+### 🧪 What E2E Tests Cover
+E2E tests focus on **critical business flows**, such as:
+- User login and session handling
+- Creating a booking and verifying it in DB
+- Updating user profile and validating API + UI consistency
+- Payment or checkout flows (if applicable)
+- Multi-service workflows involving events (Kafka/SQS)
+
+These tests ensure the system works as a whole.
+
+### 🚫 What E2E Tests Do NOT Cover
+To avoid bloat and flakiness:
+- E2E tests do **not** validate every field or edge case  
+- E2E tests do **not** replace API or integration tests  
+- E2E tests do **not** test UI layout or styling  
+- E2E tests do **not** test negative scenarios unless business‑critical  
+
+E2E tests are **high value, low volume**.
+
+### 🧱 E2E Test Architecture
+E2E tests combine:
+- Selenium UI actions  
+- RestAssured API calls  
+- JDBC DB validation  
+- Event-driven validation (Kafka/SQS)  
+- WireMock for external service simulation  
+
+Each step is validated at the appropriate layer.
+
+### 🔄 Example E2E Workflow
+1. Create a user via API  
+2. Log in via UI  
+3. Trigger a booking via UI  
+4. Validate booking record in DB  
+5. Validate event published to Kafka  
+6. Validate downstream service consumed the event  
+7. Validate UI reflects updated state  
+
+This ensures full system correctness.
+
+### 🧹 Data Management for E2E Tests
+- Test data created via API for speed  
+- Cleanup scripts remove stale records  
+- UUIDs ensure isolation in parallel runs  
+- DB snapshots can be restored for nightly E2E runs  
+
+### 🧪 Stability & Flakiness Controls
+- Explicit waits for UI  
+- Retry logic for transient API failures  
+- Event polling with timeouts  
+- Environment health checks before execution  
+
+### 📊 Reporting & Observability
+E2E tests produce:
+- Allure reports with screenshots  
+- API traces with correlation IDs  
+- DB query logs  
+- Event traces  
+- WireMock logs  
+
+This makes debugging multi‑service failures straightforward.
+
+### 🎯 Benefits
+- Validates real user workflows end‑to‑end  
+- Ensures cross‑service reliability  
+- Detects integration issues missed by unit/API tests  
+- Provides highest confidence before release  
+- Aligns with enterprise QA best practices  
+
+
+
+## 📄 8. TEST CASE EXAMPLES
 
 ### ✅ Example 1: UI Test (Login Page)
 ```gherkin
@@ -538,14 +842,14 @@ public void verifyUserPersistence() throws SQLException {
 Java Implementation (JDBC + TestNG) This shows how wrap database connections into reusable utility methods for clean test scripts.
 
 ---
-### 🐞 5. BUG REPORT EXAMPLES
+### 🐞 9. BUG REPORT EXAMPLES
 | ID      | Summary                            | Steps to Reproduce                    | Expected Result         | Actual Result             | Severity | Status      |
 | ------- | ---------------------------------- | ------------------------------------- | ----------------------- | ------------------------- | -------- | ----------- |
 | BUG-001 | Login fails with valid credentials | Enter correct user/pass → click login | Redirect to secure area | Stuck on login page       | High     | Open        |
 | BUG-002 | API returns 500 on invalid token   | Call POST /booking with expired token | 401 Unauthorized        | 500 Internal Server Error | Medium   | In Progress |
 | BUG-003 | DB data not synced                 | Create booking via UI                 | DB should have entry    | Record missing            | High     | Open        |
 ---
-### 🧰 6. TEST SUITE STRUCTURE
+### 🧰 10. TEST SUITE STRUCTURE
 | Suite           | Scope                                  | Type          |
 | --------------- | -------------------------------------- | ------------- |
 | SmokeSuite      | Sanity check for critical endpoints/UI | UI + API      |
@@ -553,7 +857,7 @@ Java Implementation (JDBC + TestNG) This shows how wrap database connections int
 | ApiSuite        | Independent API test runs              | API           |
 | DbSuite         | Data-level validation                  | DB            |
 ---
-### 📊 7. TEST REPORTING
+### 📊 11. TEST REPORTING
 Your framework provides dual-layer visibility: technical depth for developers and high-level summaries for business stakeholders.
 
 📘 **Allure Report (Rich Dashboard)**
@@ -692,9 +996,9 @@ This ensures compliance with security and privacy standards.
 - Improved collaboration between QA, Dev, and DevOps  
 - Stronger alignment with enterprise observability practices  
 
-
 ---
-### 🧱 8. CI/CD PIPELINE EXAMPLE (GitHub Actions)
+
+### 🧱 12. CI/CD PIPELINE EXAMPLE (GitHub Actions)
 This configuration automates the testing lifecycle: triggering on every code push, executing the suite in a headless Linux environment, and generating a visual quality report.
 
 ```YAML
@@ -846,9 +1150,9 @@ To reduce execution time:
 - Zero configuration drift across machines  
 - Cloud‑native scalability for enterprise workloads  
 
-
 ---
-### 🧩 9. TEST DATA MANAGEMENT
+
+### 🧩 13. TEST DATA MANAGEMENT
 - Store test data under /src/test/resources/testdata/
 - Use Faker library to generate random input dynamically
 - Maintain environment.properties for URLs and credentials
@@ -878,7 +1182,8 @@ To ensure consistency and reproducibility across environments, all test data fol
 - Enables full traceability of data changes across releases.
 
 ---
-### 🧩 10. RISKS & MITIGATION
+
+### 🧩 14. RISKS & MITIGATION
 | Risk                    | Mitigation                         |
 | ----------------------- | ---------------------------------- |
 | Flaky tests             | Add waits, retry logic             |
@@ -994,10 +1299,9 @@ This helps leadership understand where automation provides the most value.
 - Aligns automation with business priorities  
 - Prevents suite bloat and unnecessary tests  
 
-
 ---
 
-### 🧩 11. ENVIRONMENT STRATEGY
+### 🧩 15. ENVIRONMENT STRATEGY
 | Environment | Purpose | Trigger |
 | :--- | :--- | :--- |
 | **Local** | Script development & debugging | Manual execution |
@@ -1052,7 +1356,7 @@ To reduce drift:
 - Improves release confidence and deployment stability.
 
 
-### 🧠 12. BEST PRACTICES
+### 🧠 16. BEST PRACTICES
 ✅ Maintain atomic, independent test cases
 
 ✅ Keep feature files human-readable
@@ -1172,8 +1476,8 @@ Roadmap items are prioritized based on product risk and release timelines.
 - Improves collaboration between QA, Dev, and DevOps  
 - Keeps the framework aligned with product and architectural evolution  
 
-
 ---
+
 👨‍💻 Author
 
 **Sergei Volodin**
